@@ -30,6 +30,10 @@
         /// </summary>
         public PrintType Type { get; init; }
         /// <summary>
+        /// When printing html, image or json, this will be shown as the document title.
+        /// </summary>
+        public string DocumentTitle { get; set; } = "Document";
+        /// <summary>
         /// Enable this option to show user feedback when retrieving or processing large PDF files.
         /// </summary>
         public bool ShowModal { get; init; }
