@@ -1,0 +1,26 @@
+﻿.demo1::after {
+    content: "Content of after pseudo-element."
+}
+
+.demo2 {
+    color: white;
+    background-color: orange;
+}
+
+.demo3 {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.print-colors {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+@media print {
+    .demo3 {
+        font-size: 24px;
+        font-weight: normal;
+        text-decoration: none;
+    }
+}
