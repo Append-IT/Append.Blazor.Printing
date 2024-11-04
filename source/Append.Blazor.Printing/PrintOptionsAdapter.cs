@@ -12,6 +12,8 @@ namespace Append.Blazor.Printing
         public bool ShowModal { get; init; }
         public string ModalMessage { get; init; } = "Retrieving Document...";
         public bool? Base64 { get; set; }
+        public string[] Css { get; set; } = null;
+        public bool ScanStyles { get; set; } = true;
         public string TargetStyles { get; set; } = "['*']";
 
         public PrintOptionsAdapter(PrintOptions options)
@@ -21,6 +23,9 @@ namespace Append.Blazor.Printing
             ShowModal = options.ShowModal;
             ModalMessage = options.ModalMessage;
             Base64 = options.Base64 == true ? true : null;
+            if (options.CssUrls.Count > 0)
+                Css = options.CssUrls.ToArray();
+            ScanStyles = options.ScanStyles;
         }
     }
 }

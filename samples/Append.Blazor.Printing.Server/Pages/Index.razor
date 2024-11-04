@@ -4,6 +4,79 @@
 
 <h1>Hello, world!</h1>
 
-<button @onclick="@(()=> PrintingService.Print("docs/sample.pdf"))">
+<button @onclick="@(() => PrintingService.Print("docs/sample.pdf"))">
     Print PDF
 </button>
+
+<hr />
+
+<h2>Print HTML element by ID</h2>
+
+<p>
+    For printing an HTML element by ID there are multiple options.<br />
+    The default option is to scan the current effective styles will be and what is printed will closely match what the user currently sees. However, before and after pseudo-elements aren't included.<br />
+    Alternatively scanning current styles can be disabled and URLs for CSS file(s) can be provided, this enables applying different styles when printing.<br />
+</p>
+
+<hr />
+<div id="print-me">
+    <h3>This section between the horizontal lines will be printed.</h3>
+    <div class="d-none d-print-block">Normally not displayed, <b>only printed</b> when Bootstrap is included.</div>
+    <div class="d-print-none">This is normally displayed but <b>not printed</b> when Bootstrap is included.</div>
+    <div class="demo1 mb-1">This element has an <code>::after</code> pseudo-element. </div>
+    <div class="demo2 mb-1">Element with background colour, with default <code>print-color-adjust</code> setting.</div>
+    <div class="demo2 mb-1 print-colors">Element with background colour, with <code>print-color-adjust</code> set to <code>exact</code>.</div>
+    <div class="demo3 mb-1">
+        Element with different styles set in print media query in scoped CSS, <code>ScanStyles</code> need to be disabled for different style to take effect.
+        Also, this element demonstrates that having <code>ScanStyles</code> enabled can cause issues when an element requires more vertical space when printing.
+        Dependent on the browser window width this text might be wrapped over more lines when being printed, overlapping the element below when <code>ScanStyles</code> is used.
+    </div>
+    <div class="mb-1">Some text which might be overlapped by the above text when <code>ScanStyles</code> is used.</div>
+</div>
+<hr />
+
+<button @onclick="@PrintDefault">
+    Print section default options
+</button>
+<div class="mt-2">
+    <EditForm Model="_model">
+        <div class="mb-1 form-check">
+            <InputCheckbox class="form-check-input" id="cb_bootstrap-css" @bind-Value="_model.IncludeBootstrapCss" />
+            <label class="form-check-label" for="cb_bootstrap-css">Bootstrap CSS URL</label>
+        </div>
+        <div class="mb-1 form-check">
+            <InputCheckbox class="form-check-input" id="cb_appliation-css" @bind-Value="_model.IncludeApplicationCss" />
+            <label class="form-check-label" for="cb_appliation-css">Include application CSS URLs</label>
+        </div>
+        <div class="mb-1 form-check">
+            <InputCheckbox class="form-check-input" id="cb_scan-styles" @bind-Value="_model.ScanStyles" />
+            <label class="form-check-label" for="cb_scan-styles">Enable style scanning</label>
+        </div>
+    </EditForm>
+    <button @onclick="@Print">
+        Print section with selected options.
+    </button>
+</div>
+
+@code
+{
+    private Task PrintDefault() => PrintingService.Print("print-me", PrintType.Html);
+
+    private class DemoModel
+    {
+        public bool IncludeBootstrapCss { get; set; } = true;
+        public bool IncludeApplicationCss { get; set; } = true;
+        public bool ScanStyles { get; set; }
+    }
+
+    private readonly DemoModel _model = new();
+
+    private Task Print()
+    {
+        var options = new PrintOptions { Printable = "print-me", Type = PrintType.Html, ScanStyles = _model.ScanStyles };
+        if (_model.IncludeBootstrapCss) options.CssUrls.Add("css/bootstrap/bootstrap.min.css");
+        if (_model.IncludeApplicationCss) options.CssUrls.AddRange(new[] { "css/site.css", "Append.Blazor.Printing.Server.styles.css" });
+
+        return PrintingService.Print(options);
+    }
+}

@@ -1,4 +1,6 @@
-﻿namespace Append.Blazor.Printing
+﻿using System.Collections.Generic;
+
+namespace Append.Blazor.Printing
 {
     /// <summary>
     /// Options for a specific print.
@@ -41,5 +43,13 @@
         /// Used when printing PDF documents passed as base64 data.
         /// </summary>
         public bool Base64 { get; set; }
+        /// <summary>
+        /// This allows us to pass one or more css files URLs that should be applied to the html being printed.
+        /// </summary>
+        public List<string> CssUrls { get; } = new();
+        /// <summary>
+        /// When set to <c>false</c>, the library will not process styles applied to the html being printed. Useful when using <see cref="CssUrls"/>.
+        /// </summary>
+        public bool ScanStyles { get; set; } = true;
     }
 }
